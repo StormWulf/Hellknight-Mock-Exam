@@ -3,9 +3,6 @@ import sys
 from random import randint
 from characters import barbazu, lucius
 
-def dice(num, sides):
-    return sum([randint(1, sides) for i in range(num)])
-
 if __name__ == '__main__':
     # Logging
     root = logging.getLogger()
@@ -38,24 +35,22 @@ if __name__ == '__main__':
             player_1.turn = turn
             player_1.battle(player_2)
             if not player_2.is_alive:
+                logging.info(f'{player_1.name} has defeated {player_2.name} with {player_1.hp} HP left!')
+                results[player_1.name] += 1
                 break
             player_2.turn = turn
             player_2.battle(player_1)
             if not player_1.is_alive:
+                logging.info(f'{player_2.name} has defeated {player_1.name} with {player_2.hp} HP left!')
+                results[player_2.name] += 1
                 break
             turn += 1
 
         # Battle finished!
-        if not player_1.is_alive:
-            logging.info(f'{player_2.name} has defeated {player_1.name} with {player_2.hp} HP left!')
-            results[player_2.name] += 1
-            if player_2.name == 'Lucius Uthric':
-                results['bleeding'] += 1 if player_2.bleeding else 0
-                results['devil_chills'] += 1 if player_2.devil_chills else 0
+        if player_1.name == 'Lucius Uthric':
+            lucius_status = player_1
         else:
-            logging.info(f'{player_1.name} has defeated {player_2.name} with {player_1.hp} HP left!')
-            results[player_1.name] += 1
-            if player_1.name == 'Lucius Uthric':
-                results['bleeding'] += 1 if player_1.bleeding else 0
-                results['devil_chills'] += 1 if player_1.devil_chills else 0
+            lucius_status = player_2
+        results['bleeding'] += 1 if lucius_status.bleeding else 0
+        results['devil_chills'] += 1 if lucius_status.devil_chills else 0
     logging.info(results)
