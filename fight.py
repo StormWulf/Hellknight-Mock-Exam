@@ -17,29 +17,45 @@ if __name__ == '__main__':
     handler.setFormatter(formatter)
     root.addHandler(handler)
 
-    # Roll initiative!
-    if barbazu.Barbazu().initiative > lucius.Lucius().initiative:
-        player_1, player_2 = barbazu.Barbazu(), lucius.Lucius()
-    else:
-        player_1, player_2 = lucius.Lucius(), barbazu.Barbazu()
-    player_1.first = True
+    results = {
+        'Lucius Uthric': 0,
+        'Devil, Barbazu': 0,
+        'bleeding': 0,
+        'devil_chills': 0,
+    }
+    for i in range(1000):
+        # Roll initiative!
+        if barbazu.Barbazu().initiative > lucius.Lucius().initiative:
+            player_1, player_2 = barbazu.Barbazu(), lucius.Lucius()
+        else:
+            player_1, player_2 = lucius.Lucius(), barbazu.Barbazu()
+        player_1.first = True
 
-    # Battle start!
-    turn = 1
-    while True:
-        logging.info(f'Round {turn}, fight!')
-        player_1.turn = turn
-        player_1.battle(player_2)
-        if not player_2.is_alive:
-            break
-        player_2.turn = turn
-        player_2.battle(player_1)
+        # Battle start!
+        turn = 1
+        while True:
+            logging.info(f'Round {turn}, fight!')
+            player_1.turn = turn
+            player_1.battle(player_2)
+            if not player_2.is_alive:
+                break
+            player_2.turn = turn
+            player_2.battle(player_1)
+            if not player_1.is_alive:
+                break
+            turn += 1
+
+        # Battle finished!
         if not player_1.is_alive:
-            break
-        turn += 1
-
-    # Battle finished!
-    if not player_1.is_alive:
-        logging.info(f'{player_2.name} has defeated {player_1.name} with {player_2.hp} HP left!')
-    else:
-        logging.info(f'{player_1.name} has defeated {player_2.name} with {player_1.hp} HP left!')
+            logging.info(f'{player_2.name} has defeated {player_1.name} with {player_2.hp} HP left!')
+            results[player_2.name] += 1
+            if player_2.name == 'Lucius Uthric':
+                results['bleeding'] += 1 if player_2.bleeding else 0
+                results['devil_chills'] += 1 if player_2.devil_chills else 0
+        else:
+            logging.info(f'{player_1.name} has defeated {player_2.name} with {player_1.hp} HP left!')
+            results[player_1.name] += 1
+            if player_1.name == 'Lucius Uthric':
+                results['bleeding'] += 1 if player_1.bleeding else 0
+                results['devil_chills'] += 1 if player_1.devil_chills else 0
+    logging.info(results)

@@ -42,21 +42,21 @@ class Barbazu(object):
         attack = self.glaive_attack + 2 if self.turn == 1 and self.first else self.glaive_attack
         if attack >= enemy.ac:
             damage = self.glaive_damage
-            logging.info(f'{self.name} hits {enemy.name} for {damage}!')
+            logging.info(f'{self.name} hits {enemy.name} with the first glaive attack for {damage}!')
             enemy.hp -= damage
             enemy.bleeding = True
         else:
-            logging.info(f'{self.name} missed with the first attack!')
+            logging.info(f'{self.name} missed with the first glaive attack!')
 
         # Second glaive attack (can't FRA on first turn)
         if not self.turn == 1:
             if self.glaive_attack - 5 >= enemy.ac:
                 damage = self.glaive_damage
-                logging.info(f'{self.name} hits {enemy.name} with a second attack for {damage}!')
+                logging.info(f'{self.name} hits {enemy.name} with a second glaive attack for {damage}!')
                 enemy.hp -= damage
                 enemy.bleeding = True
             else:
-                logging.info(f'{self.name} missed with the second attack!')
+                logging.info(f'{self.name} missed with the second glaive attack!')
 
     @property
     def claws_attack(self):
@@ -82,7 +82,7 @@ class Barbazu(object):
         for i in range(2):
             if self.claws_attack >= enemy.ac:
                 damage = self.claws_damage
-                logging.info(f'{self.name} hits {enemy.name} for {damage}!')
+                logging.info(f'{self.name} hits {enemy.name} with claw for {damage}!')
                 enemy.hp -= damage
                 hit += 1
             else:
@@ -93,6 +93,7 @@ class Barbazu(object):
             enemy.hp -= damage
             if enemy.fort_save < 17:
                 logging.info(f'{enemy.name} contracts Devil Chills!')
+                enemy.devil_chills = True
 
     def battle(self, enemy):
         if self.turn == 1 and self.first:

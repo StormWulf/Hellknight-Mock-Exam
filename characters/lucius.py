@@ -8,6 +8,7 @@ class Lucius(object):
         self.ac = 24  # Armor check
         self.stamina = 7  # Stamina pool
         self.bleeding = False  # If suffering from the bleeding condition
+        self.devil_chills = False  # If suffering from the Barbazu's devil chills
         self.fatigued = False  # If suffering from fatigued condition
         self.critical_hit = False  # If this character landed a critical hit
         self.power_attack = power_attack  # If this character will use Power Attack
@@ -50,7 +51,7 @@ class Lucius(object):
             mod -= 5
         if self.fatigued:
             mod -= 2
-        if self.critical_hit and self.attack >= 19:
+        if self.critical_hit and any([self.attack >= 19, self.bless]):
             logging.info('Critical hit!')
             roll += dice(1, 8)
             mod *= 2
