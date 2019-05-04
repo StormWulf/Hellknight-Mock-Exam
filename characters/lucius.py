@@ -1,11 +1,11 @@
 import logging
-from random import randint
+from dice import dice
 
 class Lucius(object):
     def __init__(self, power_attack=True, bless=False, bane=True):
         self.name = 'Lucius Uthric'
         self.hp = 46  # Health
-        self.ac = 24  # Armor check
+        self.ac = 24  # Armor Class
         self.stamina = 7  # Stamina pool
         self.bleeding = False  # If suffering from the bleeding condition
         self.devil_chills = False  # If suffering from the Barbazu's devil chills
@@ -16,6 +16,7 @@ class Lucius(object):
         self.bane = bane  # If this character will use Bane (devil)
         self.first = False  # Determines if this character had the first turn
         self.turn = 1  # The round number of the battle
+        self.enemy_ac = None  # Enemy's armor class
 
     @property
     def is_alive(self):
@@ -51,7 +52,7 @@ class Lucius(object):
             mod -= 5
         if self.fatigued:
             mod -= 2
-        if self.critical_hit and any([self.attack >= 19, self.bless]):
+        if self.critical_hit and any([self.attack >= self.enemy_ac, self.bless]):
             logging.info('Critical hit!')
             roll += dice(1, 8)
             mod *= 2
@@ -65,6 +66,7 @@ class Lucius(object):
         return dice(1, 20) + 6
 
     def battle(self, enemy):
+        self.enemy_ac = enemy.ac
         if self.bleeding:
             logging.info(f'{self.name} is bleeding!')
             self.hp -= 2
@@ -96,6 +98,3 @@ class Lucius(object):
             # Lucius misses!
             else:
                 logging.info(f'{self.name} missed!')
-
-def dice(num, sides):
-    return sum([randint(1, sides) for i in range(num)])

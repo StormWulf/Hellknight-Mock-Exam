@@ -1,6 +1,5 @@
 import logging
 import sys
-from random import randint
 from characters import barbazu, lucius
 
 if __name__ == '__main__':
@@ -19,8 +18,9 @@ if __name__ == '__main__':
         'Devil, Barbazu': 0,
         'bleeding': 0,
         'devil_chills': 0,
+        'rounds': [],
     }
-    for i in range(1000):
+    for i in range(10000):
         # Roll initiative!
         if barbazu.Barbazu().initiative > lucius.Lucius().initiative:
             player_1, player_2 = barbazu.Barbazu(), lucius.Lucius()
@@ -53,4 +53,6 @@ if __name__ == '__main__':
             lucius_status = player_2
         results['bleeding'] += 1 if lucius_status.bleeding else 0
         results['devil_chills'] += 1 if lucius_status.devil_chills else 0
+        results['rounds'].append(turn)
+    results['rounds'] = sum(results['rounds']) / len(results['rounds'])
     logging.info(results)

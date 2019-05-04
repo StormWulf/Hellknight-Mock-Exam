@@ -1,5 +1,5 @@
 import logging
-from random import randint
+from dice import dice
 
 class Barbazu(object):
     def __init__(self):
@@ -9,6 +9,7 @@ class Barbazu(object):
         self.critical_hit = False  # If this character landed a critical hit
         self.first = False  # Determines if this character had the first turn
         self.turn = 1  # The round number of the battle
+        self.enemy_ac = None  # Enemy's armor class
 
     @property
     def is_alive(self):
@@ -31,7 +32,7 @@ class Barbazu(object):
     def glaive_damage(self):
         roll = dice(1, 10)
         mod = 6
-        if self.critical_hit and self.glaive_attack > 24:
+        if self.critical_hit and self.glaive_attack >= self.enemy_ac:
             logging.info('Critical hit!')
             roll += dice(2, 10)
             mod *= 3
@@ -71,7 +72,7 @@ class Barbazu(object):
     def claws_damage(self):
         roll = dice(1, 6)
         mod = 4
-        if self.critical_hit and self.claws_attack > 24:
+        if self.critical_hit and self.claws_attack >= self.enemy_ac:
             logging.info('Critical hit!')
             roll += dice(1, 6)
             mod *= 2
@@ -96,10 +97,8 @@ class Barbazu(object):
                 enemy.devil_chills = True
 
     def battle(self, enemy):
-        if self.turn == 1 and self.first:
+        self.enemy_ac = enemy.ac
+        if self.turn == 1:
             self.glaive(enemy)
         else:
             self.claws(enemy)
-
-def dice(num, sides):
-    return sum([randint(1, sides) for i in range(num)])
