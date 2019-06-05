@@ -54,8 +54,8 @@ class Lucius(object):
             mod -= 2
         if self.critical_hit and any([self.attack >= self.enemy_ac, self.bless]):
             logging.info('Critical hit!')
-            roll += dice(1, 8)
-            mod *= 2
+            roll += dice(2, 8)
+            mod *= 3
         result = roll + mod
         if self.bane:
             result += dice(2, 6) + 2
